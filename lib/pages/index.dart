@@ -26,7 +26,7 @@ class _IndexContentState extends State<_IndexContent> {
   var currentIndex = 0;
   final List<Widget> tabItems = [
     HomePage(),
-    TicketPage(),
+//    TicketPage(),
     TerminalPage(),
     FavouritePage()
   ];
@@ -47,8 +47,8 @@ class _IndexContentState extends State<_IndexContent> {
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.local_activity), title: Text("Tickets")),
+//          BottomNavigationBarItem(
+//              icon: Icon(Icons.local_activity), title: Text("Tickets")),
           BottomNavigationBarItem(icon: Icon(Icons.directions_bus), title: Text("Terminal")),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite), title: Text("Favourites")),
