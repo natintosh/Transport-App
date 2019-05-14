@@ -61,7 +61,7 @@ class _TransportLogoImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  AspectRatio(
-      aspectRatio: 3 / 2,
+      aspectRatio: 7 / 3,
       child: Container(color: Colors.grey,),
     );
   }

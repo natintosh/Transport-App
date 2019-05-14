@@ -92,13 +92,13 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         child: Material(
           child: Card(
               shape: StadiumBorder(),
-              elevation: 8,
+              elevation: 4,
               margin: EdgeInsets.all(8),
               child: InkWell(
                 onTap: widget.onTap,
                 customBorder: StadiumBorder(),
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 2.0),
+                  padding: EdgeInsets.fromLTRB(24.0, 2.0, 8.0, 2.0),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -146,7 +146,7 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      elevation: 8,
+      elevation: 4,
       margin: EdgeInsets.all(8),
       color: Colors.yellowAccent,
       child: InkWell(

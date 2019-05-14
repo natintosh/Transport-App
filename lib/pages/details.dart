@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _DetailsPageState();
+  }
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  bool isFavourite = false;
+
+  _setFavourite() {
+    setState(() {
+      isFavourite = !isFavourite;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,6 +23,17 @@ class DetailsPage extends StatelessWidget {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Colors.black),
+        actions: <Widget>[
+          IconButton(
+              icon: isFavourite
+                  ? Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                    )
+                  : Icon(Icons.favorite_border),
+              tooltip: "Favorite",
+              onPressed: _setFavourite)
+        ],
       ),
       backgroundColor: Colors.green[200],
       body: SafeArea(child: DetailsPageContent()),
@@ -32,8 +58,7 @@ class _DetailPageContentState extends State<DetailsPageContent> {
           padding: EdgeInsets.all(8),
           child: _DestinationCardWidget(),
         )),
-          _DestinationContentGirdViewWidget(content: getMappedItem()),
-
+        _DestinationContentGirdViewWidget(content: getMappedItem()),
       ],
     );
   }
@@ -59,6 +84,7 @@ class _DestinationContentGirdViewWidget extends StatelessWidget {
       primary: false,
       shrinkWrap: true,
       crossAxisCount: 2,
+      childAspectRatio: 4 / 3,
       children: getChildrenWidget(content),
     );
   }
@@ -112,7 +138,7 @@ class _DestinationCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
+      elevation: 4,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
