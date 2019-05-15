@@ -3,6 +3,7 @@ import 'package:transport_app/pages/details.dart';
 import 'package:transport_app/pages/search.dart';
 import 'package:transport_app/pages/login.dart';
 import 'package:transport_app/pages/index.dart';
+import 'package:transport_app/pages/transport.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
         "/index": (BuildContext context) => IndexPage(),
         "/search": (BuildContext context) => SearchPage(),
         "/travel-details": (BuildContext context) => DetailsPage(),
+        "/transport": (BuildContext context) => TransportPage(),
       },
       title: "Transhub",
       theme: ThemeData(
