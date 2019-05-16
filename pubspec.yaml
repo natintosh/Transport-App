@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   # Personal Dependency
   flutter_icons: ^0.1.4
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:

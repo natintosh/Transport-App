@@ -18,10 +18,11 @@ class MyApp extends StatelessWidget {
         "/search": (BuildContext context) => SearchPage(),
         "/travel-details": (BuildContext context) => DetailsPage(),
         "/transport": (BuildContext context) => TransportPage(),
+        "/bus-details": (BuildContext context) => TransportPage(),
       },
       title: "Transhub",
       theme: ThemeData(
-          primaryColor: Colors.green, accentColor: Colors.yellowAccent),
+          primaryColor: Colors.green, accentColor: Colors.yellowAccent.shade700),
     );
   }
 }
