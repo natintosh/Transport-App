@@ -2,13 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TransportPage extends StatelessWidget {
+  final String name;
+  final String imageUrl;
+  final String tag;
+
+  TransportPage({this.name, this.imageUrl, this.tag});
+
   @override
   Widget build(BuildContext context) {
-    return TransportPageContent();
+    return TransportPageContent(
+      name: name,
+      imageUrl: imageUrl,
+      tag: tag,
+    );
   }
 }
 
 class TransportPageContent extends StatefulWidget {
+  final String name;
+  final String imageUrl;
+  final String tag;
+
+  TransportPageContent({this.name, this.imageUrl, this.tag});
+
   @override
   State<StatefulWidget> createState() {
     return _TransportPageContentState();
@@ -27,14 +43,29 @@ class _TransportPageContentState extends State<TransportPageContent> {
               expandedHeight: 200.0,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                  title: Text("MNT Transport",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                      )),
-                  background: Image.network(
-                    "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-                    fit: BoxFit.cover,
+                  title: Container(
+                    child: Text("${widget.name}",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        )),
+                  ),
+                  background: Stack(
+                    children: <Widget>[
+                      SizedBox.expand(
+                        child: Material(
+                          child: Hero(
+                              tag: "${widget.tag}",
+                              child: Image.network(
+                                "${widget.imageUrl}",
+                                fit: BoxFit.cover,
+                              )),
+                        ),
+                      ),
+                      Container(
+                        color: Color.fromARGB(50, 0, 0, 0),
+                      )
+                    ],
                   )),
             ),
             SliverList(
@@ -147,12 +178,10 @@ class _TransportBookTicketState extends State<_TransportBookTicket> {
 
   void _setDepartureDate(DateTime date) {
     departureDate = date;
-    print("departure $date");
   }
 
   void _setArrivalDate(DateTime date) {
     arrivalDate = date;
-    print("arrival $date");
   }
 
   void _setDepartureValue(String value) {
@@ -174,7 +203,7 @@ class _TransportBookTicketState extends State<_TransportBookTicket> {
   }
 
   void _bookTrip() {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text("Book Trip")));
+    Navigator.of(context).pushNamed("/bus-details");
   }
 
   List<String> _getDestination() {

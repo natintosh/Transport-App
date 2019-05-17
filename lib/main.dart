@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transport_app/pages/bus_details.dart';
 import 'package:transport_app/pages/details.dart';
 import 'package:transport_app/pages/search.dart';
 import 'package:transport_app/pages/login.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         "/search": (BuildContext context) => SearchPage(),
         "/travel-details": (BuildContext context) => DetailsPage(),
         "/transport": (BuildContext context) => TransportPage(),
-        "/bus-details": (BuildContext context) => TransportPage(),
+        "/bus-details": (BuildContext context) => BusDetailsPage(),
       },
       title: "Transhub",
       theme: ThemeData(

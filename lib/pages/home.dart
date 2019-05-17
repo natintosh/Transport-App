@@ -148,7 +148,7 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       elevation: 4,
       margin: EdgeInsets.all(8),
-      color: Colors.yellowAccent,
+      color: Theme.of(context).accentColor,
       child: InkWell(
         onTap: widget.onTap,
         child: cardContent(),
