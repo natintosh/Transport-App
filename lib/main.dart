@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       },
       title: "Transhub",
       theme: ThemeData(
-          primaryColor: Colors.green, accentColor: Colors.yellowAccent.shade700),
+        primarySwatch: Colors.green, accentColor: Colors.yellowAccent.shade700),
     );
   }
 }

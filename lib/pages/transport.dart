@@ -69,10 +69,10 @@ class _TransportPageContentState extends State<TransportPageContent> {
                   )),
             ),
             SliverList(
-                delegate: SliverChildListDelegate.fixed(<Widget>[
+                delegate: SliverChildListDelegate(<Widget>[
               _TransportDetailsCard(
                   details:
-                      "Best Transport in Africa, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut vestibulum eros, vel elementum nisi. Donec dolor magna, euismod sit amet mi et, rhoncus vulputate lectus. Curabitur placerat condimentum mi."),
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut vestibulum eros, vel elementum nisi. Donec dolor magna, euismod sit amet mi et, rhoncus vulputate lectus. Curabitur placerat condimentum mi."),
               _TransportDestinationCard(destination: <String>[]),
               _TransportBookTicket(),
             ]))
@@ -171,7 +171,7 @@ class _TransportBookTicket extends StatefulWidget {
 
 class _TransportBookTicketState extends State<_TransportBookTicket> {
   bool isOneWay = true;
-  String departureValue;
+  String originValue;
   String destinationValue;
   DateTime departureDate;
   DateTime arrivalDate;
@@ -184,9 +184,9 @@ class _TransportBookTicketState extends State<_TransportBookTicket> {
     arrivalDate = date;
   }
 
-  void _setDepartureValue(String value) {
+  void _setOriginValue(String value) {
     setState(() {
-      departureValue = value;
+      originValue = value;
     });
   }
 
@@ -253,27 +253,27 @@ class _TransportBookTicketState extends State<_TransportBookTicket> {
                     ? _BookTripOneTrip(
                         key: UniqueKey(),
                         isOneWay: isOneWay,
-                        departureValue: departureValue,
+                        originValue: originValue,
                         destinationValue: destinationValue,
                         departureDate: departureDate,
                         getDestination: _getDestination(),
                         getQuantity: _getQuantity(),
                         setTrip: _setTrip,
-                        setDepartureValue: _setDepartureValue,
+                        setOriginValue: _setOriginValue,
                         setDestinationValue: _setDestinationValue,
                         setDepartureDate: _setDepartureDate,
                         bookTrip: _bookTrip)
                     : _BookRoundTripWidget(
                         key: UniqueKey(),
                         isOneWay: isOneWay,
-                        departureValue: departureValue,
+                        originValue: originValue,
                         destinationValue: destinationValue,
                         departureDate: departureDate,
                         arrivalDate: arrivalDate,
                         getDestination: _getDestination(),
                         getQuantity: _getQuantity(),
                         setTrip: _setTrip,
-                        setDepartureValue: _setDepartureValue,
+                        setOriginValue: _setOriginValue,
                         setDestinationValue: _setDestinationValue,
                         setDepartureDate: _setDepartureDate,
                         setArrivalDate: _setArrivalDate,
@@ -289,13 +289,13 @@ class _TransportBookTicketState extends State<_TransportBookTicket> {
 
 class _BookTripOneTrip extends StatelessWidget {
   final bool isOneWay;
-  final String departureValue;
+  final String originValue;
   final String destinationValue;
   final DateTime departureDate;
   final List<String> getDestination;
   final List<String> getQuantity;
   final VoidCallback setTrip;
-  final ValueChanged<String> setDepartureValue;
+  final ValueChanged<String> setOriginValue;
   final ValueChanged<String> setDestinationValue;
   final ValueChanged<DateTime> setDepartureDate;
   final VoidCallback bookTrip;
@@ -303,13 +303,13 @@ class _BookTripOneTrip extends StatelessWidget {
   const _BookTripOneTrip(
       {Key key,
       this.isOneWay,
-      this.departureValue,
+      this.originValue,
       this.destinationValue,
       this.departureDate,
       this.getDestination,
       this.getQuantity,
       this.setTrip,
-      this.setDepartureValue,
+      this.setOriginValue,
       this.setDestinationValue,
       this.setDepartureDate,
       this.bookTrip})
@@ -327,10 +327,10 @@ class _BookTripOneTrip extends StatelessWidget {
           ),
           _BookTripLocationWidget(
               key: UniqueKey(),
-              title: 'Departure',
-              value: departureValue,
+              title: 'Origin',
+              value: originValue,
               destinations: getDestination,
-              onItemSelected: setDepartureValue),
+              onItemSelected: setOriginValue),
           _BookTripLocationWidget(
               key: UniqueKey(),
               title: 'Destination',
@@ -356,14 +356,14 @@ class _BookTripOneTrip extends StatelessWidget {
 
 class _BookRoundTripWidget extends StatelessWidget {
   final bool isOneWay;
-  final String departureValue;
+  final String originValue;
   final String destinationValue;
   final DateTime departureDate;
   final DateTime arrivalDate;
   final List<String> getDestination;
   final List<String> getQuantity;
   final VoidCallback setTrip;
-  final ValueChanged<String> setDepartureValue;
+  final ValueChanged<String> setOriginValue;
   final ValueChanged<String> setDestinationValue;
   final ValueChanged<DateTime> setDepartureDate;
   final ValueChanged<DateTime> setArrivalDate;
@@ -372,14 +372,14 @@ class _BookRoundTripWidget extends StatelessWidget {
   const _BookRoundTripWidget({
     Key key,
     @required this.isOneWay,
-    @required this.departureValue,
+    @required this.originValue,
     @required this.destinationValue,
     @required this.departureDate,
     @required this.arrivalDate,
     @required this.getDestination,
     @required this.getQuantity,
     @required this.setTrip,
-    @required this.setDepartureValue,
+    @required this.setOriginValue,
     @required this.setDestinationValue,
     @required this.setDepartureDate,
     @required this.setArrivalDate,
@@ -398,10 +398,10 @@ class _BookRoundTripWidget extends StatelessWidget {
           ),
           _BookTripLocationWidget(
               key: UniqueKey(),
-              title: 'Departure',
-              value: departureValue,
+              title: 'Origin',
+              value: originValue,
               destinations: getDestination,
-              onItemSelected: setDepartureValue),
+              onItemSelected: setOriginValue),
           _BookTripLocationWidget(
               key: UniqueKey(),
               title: 'Destination',

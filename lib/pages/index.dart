@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:transport_app/pages/favourite.dart';
+import 'package:transport_app/pages/tickets.dart';
 import 'package:transport_app/pages/home.dart';
-import 'package:transport_app/pages/terminal.dart';
+import 'package:transport_app/pages/terminals.dart';
 
 class IndexPage extends StatelessWidget {
   @override
@@ -26,7 +26,7 @@ class _IndexContentState extends State<_IndexContent> {
   final List<Widget> tabItems = [
     HomePage(),
     TerminalPage(),
-    FavouritePage()
+    TicketPage()
   ];
 
   @override
@@ -47,7 +47,7 @@ class _IndexContentState extends State<_IndexContent> {
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
           BottomNavigationBarItem(icon: Icon(Icons.directions_bus), title: Text("Terminal")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), title: Text("Favourites")),
+              icon: Icon(Icons.local_play), title: Text("Favourites")),
         ],
       ),
     );
