@@ -5,7 +5,25 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: SafeArea(child: _LoginContent()),
+      body: SafeArea(
+          child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment(1.3, 1.3),
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+            ),
+          ),
+          _LoginContent()
+        ],
+      )),
     );
   }
 }
@@ -71,7 +89,7 @@ class _LoginContentState extends State<_LoginContent> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       textColor: Colors.white,
-      color: Colors.green,
+      color: Theme.of(context).primaryColorDark,
       onPressed: () {
         if (!isToggled) {
           toggleContent();
@@ -166,7 +184,7 @@ class _LoginContentState extends State<_LoginContent> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 textColor: Colors.white,
-                color: Colors.green,
+                color: Theme.of(context).primaryColorDark,
                 child: Text(_LoginContentState.registerText),
               ),
             ),
@@ -225,7 +243,7 @@ class _LoginContentState extends State<_LoginContent> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 textColor: Colors.white,
-                color: Colors.green,
+                color: Theme.of(context).primaryColorDark,
                 child: Text(_LoginContentState.signInText),
               ),
             ),

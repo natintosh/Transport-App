@@ -32,6 +32,19 @@ class FavouritePageContentState extends State<FavouritePageContent> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        Align(
+          alignment: Alignment(1.3, 1.3),
+          child: Container(
+            width: 250,
+            height: 250,
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+          ),
+        ),
         PageView.builder(
           controller: controller,
           itemCount: 2,
@@ -59,9 +72,9 @@ class FavouritePageContentState extends State<FavouritePageContent> {
 
   Widget getPageButton(int index, int i, {@required String name}) {
     Widget activeButton = RawMaterialButton(
-      fillColor: Colors.green,
+      fillColor: Theme.of(context).primaryColorDark,
       onPressed: () {},
-      splashColor: Colors.green.shade600,
+      splashColor: Theme.of(context).primaryColorDark,
       child: Text(
         "$name",
         style: TextStyle(color: Colors.white),

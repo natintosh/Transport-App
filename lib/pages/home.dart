@@ -116,7 +116,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                         child: InkWell(
                           customBorder: CircleBorder(),
                           onTap: () {
-                            showSnackBar(context: context, s: 'Open Profile');
+                            Navigator.of(context).pushNamed('/profile');
                           },
                         ),
                       )

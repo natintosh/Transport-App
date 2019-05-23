@@ -14,7 +14,6 @@ class IndexPage extends StatelessWidget {
 }
 
 class _IndexContent extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return _IndexContentState();
@@ -23,16 +22,30 @@ class _IndexContent extends StatefulWidget {
 
 class _IndexContentState extends State<_IndexContent> {
   var currentIndex = 0;
-  final List<Widget> tabItems = [
-    HomePage(),
-    TerminalPage(),
-    TicketPage()
-  ];
+  final List<Widget> tabItems = [HomePage(), TerminalPage(), TicketPage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: tabItems[currentIndex]),
+      body: SafeArea(
+          child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment(1.3, 1.3),
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+            ),
+          ),
+          tabItems[currentIndex]
+        ],
+      )),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
@@ -45,7 +58,8 @@ class _IndexContentState extends State<_IndexContent> {
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-          BottomNavigationBarItem(icon: Icon(Icons.directions_bus), title: Text("Terminal")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.directions_bus), title: Text("Terminal")),
           BottomNavigationBarItem(
               icon: Icon(Icons.local_play), title: Text("Favourites")),
         ],

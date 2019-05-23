@@ -35,7 +35,7 @@ class _DetailsPageState extends State<DetailsPage> {
               onPressed: _setFavourite)
         ],
       ),
-      backgroundColor: Colors.green[200],
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: SafeArea(child: DetailsPageContent()),
     );
   }
@@ -211,7 +211,7 @@ class _LocationStatusFromWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         _CircularDotWidget(
-          color: Colors.green,
+          color: Theme.of(context).primaryColorDark,
           padding: 4,
         ),
         _CircularDotWidget(color: Colors.grey),
@@ -231,7 +231,7 @@ class _LocationStatusToWidget extends StatelessWidget {
         _CircularDotWidget(color: Colors.grey),
         _CircularDotWidget(color: Colors.grey),
         _CircularDotWidget(
-          color: Colors.green,
+          color: Theme.of(context).primaryColorDark,
           padding: 4,
         )
       ],

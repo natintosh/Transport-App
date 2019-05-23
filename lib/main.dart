@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:transport_app/pages/bus_details.dart';
 import 'package:transport_app/pages/details.dart';
+import 'package:transport_app/pages/profile.dart';
 import 'package:transport_app/pages/search.dart';
 import 'package:transport_app/pages/login.dart';
 import 'package:transport_app/pages/index.dart';
@@ -20,10 +21,12 @@ class MyApp extends StatelessWidget {
         "/travel-details": (BuildContext context) => DetailsPage(),
         "/transport": (BuildContext context) => TransportPage(),
         "/bus-details": (BuildContext context) => BusDetailsPage(),
+        "/profile": (BuildContext context) => ProfilePage(),
       },
       title: "Transhub",
       theme: ThemeData(
-        primarySwatch: Colors.green, accentColor: Colors.yellowAccent.shade700),
+          primarySwatch: Colors.green,
+          accentColor: Colors.yellowAccent),
     );
   }
 }

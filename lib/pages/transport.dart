@@ -442,7 +442,7 @@ class _BookTripButtonWidget extends StatelessWidget {
       width: double.infinity,
       child: RaisedButton(
           onPressed: onButtonClick,
-          color: Colors.yellowAccent,
+          color: Theme.of(context).accentColor,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -648,7 +648,7 @@ class _BookTripActionChipTabWidget extends StatelessWidget {
           toggleActionChip();
         }
       },
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.green.shade700,
     );
     Widget unToggledChip = ActionChip(
         label: Text(title),
