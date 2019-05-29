@@ -16,9 +16,12 @@ class LoginPage extends StatelessWidget {
               decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        Theme.of(context).accentColor,
+                        Colors.white
+                      ])),
             ),
           ),
           _LoginContent()
@@ -36,7 +39,6 @@ class _LoginContent extends StatefulWidget {
 }
 
 class _LoginContentState extends State<_LoginContent> {
-  final _loginContentKey = GlobalKey<_LoginContentState>();
   bool isSignInToggle = true;
   static final String signInText = "SIGN IN";
   static final String registerText = "REGISTER";
@@ -81,7 +83,7 @@ class _LoginContentState extends State<_LoginContent> {
   }
 
   Widget getCurrentForm(bool isToggled) {
-    return (isToggled) ? signInForm() : registerForm();
+    return (isToggled) ? _SignInFormWidget() : _RegisterFormWidget();
   }
 
   Widget getButtonTab(String title, bool isToggled) {
@@ -119,10 +121,126 @@ class _LoginContentState extends State<_LoginContent> {
       content: Text('Tap'),
     ));
   }
+}
 
-  Widget registerForm() {
+class _SignInFormWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _SignInFormWidgetState();
+  }
+}
+
+class _SignInFormWidgetState extends State<_SignInFormWidget> {
+  final _signInContentKey = GlobalKey<FormState>();
+  final String emailRegExp =
+      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$";
+  RegExp _regExp;
+
+  @override
+  void initState() {
+    _regExp = RegExp(emailRegExp);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Form(
-      key: _loginContentKey,
+      key: _signInContentKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(4),
+              child: Card(
+                  elevation: 8,
+                  margin: EdgeInsets.all(8),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      style: TextStyle(fontSize: 20.0),
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          hintText: "Email", border: InputBorder.none),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please Enter Email';
+                        }
+                        if (!_regExp.hasMatch(value)) {
+                          return 'Incorrect Email';
+                        }
+                      },
+                    ),
+                  ))),
+          Padding(
+              padding: EdgeInsets.all(4),
+              child: Card(
+                  elevation: 8,
+                  margin: EdgeInsets.all(8),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: TextFormField(
+                      style: TextStyle(fontSize: 20.0),
+                      obscureText: true,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          hintText: "Password", border: InputBorder.none),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please Enter Passwords';
+                        }
+                      },
+                    ),
+                  ))),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: SizedBox(
+              height: 48,
+              width: double.infinity,
+              child: RaisedButton(
+                onPressed: () {
+                  if (_signInContentKey.currentState.validate()) {
+                    Navigator.of(context).pushReplacementNamed("/index");
+                  }
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                textColor: Colors.white,
+                color: Theme.of(context).primaryColorDark,
+                child: Text(_LoginContentState.signInText),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _RegisterFormWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _RegisterFormWidgetState();
+  }
+}
+
+class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
+  final _registerContentKey = GlobalKey<FormState>();
+  final String emailRegExp =
+      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$";
+  RegExp _regExp;
+
+  @override
+  void initState() {
+    _regExp = RegExp(emailRegExp);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _registerContentKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +257,15 @@ class _LoginContentState extends State<_LoginContent> {
                       style: TextStyle(fontSize: 20.0),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          hintText: "Name", border: InputBorder.none),
+                          hintText: "Username", border: InputBorder.none),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please Enter Username';
+                        }
+                        if (value.length < 4) {
+                          return 'Enter a username greater than 4 letters';
+                        }
+                      },
                     ),
                   ))),
           Padding(
@@ -155,6 +281,14 @@ class _LoginContentState extends State<_LoginContent> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Email", border: InputBorder.none),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please Enter Email';
+                        }
+                        if (!_regExp.hasMatch(value)) {
+                          return 'Incorrect Email';
+                        }
+                      },
                     ),
                   ))),
           Padding(
@@ -170,6 +304,11 @@ class _LoginContentState extends State<_LoginContent> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Password", border: InputBorder.none),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please Enter Passwords';
+                        }
+                      },
                     ),
                   ))),
           Padding(
@@ -186,65 +325,6 @@ class _LoginContentState extends State<_LoginContent> {
                 textColor: Colors.white,
                 color: Theme.of(context).primaryColorDark,
                 child: Text(_LoginContentState.registerText),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget signInForm() {
-    return Form(
-      key: _loginContentKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(4),
-              child: Card(
-                  elevation: 8,
-                  margin: EdgeInsets.all(8),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(fontSize: 20.0),
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          hintText: "Email", border: InputBorder.none),
-                    ),
-                  ))),
-          Padding(
-              padding: EdgeInsets.all(4),
-              child: Card(
-                  elevation: 8,
-                  margin: EdgeInsets.all(8),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: TextFormField(
-                      style: TextStyle(fontSize: 20.0),
-                      obscureText: true,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          hintText: "Password", border: InputBorder.none),
-                    ),
-                  ))),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: SizedBox(
-              height: 48,
-              width: double.infinity,
-              child: RaisedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed("/index");
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                textColor: Colors.white,
-                color: Theme.of(context).primaryColorDark,
-                child: Text(_LoginContentState.signInText),
               ),
             ),
           )

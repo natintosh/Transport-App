@@ -35,11 +35,21 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
             )),
         SliverList(
             delegate: SliverChildListDelegate(<Widget>[
-              _ProfileListItemWidget(title: "Details"),
-              _ProfileListItemWidget(title: "Preferences"),
-              _ProfileListItemWidget(title: "My Trip Details"),
-              _ProfileListItemWidget(title: "Send Feedback", routeName: "/feedback",),
-              _ProfileListItemWidget(title: "About", routeName: "/about",),
+          _ProfileListItemWidget(
+            title: "Details",
+            routeName: '/user-details',
+          ),
+          _ProfileListItemWidget(title: "Preferences"),
+          _ProfileListItemWidget(
+              title: "My Trip Details", routeName: "/trip-details"),
+          _ProfileListItemWidget(
+            title: "Send Feedback",
+            routeName: "/feedback",
+          ),
+          _ProfileListItemWidget(
+            title: "About",
+            routeName: "/about",
+          ),
         ]))
       ],
     );
@@ -47,7 +57,6 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
 }
 
 class _ProfileListItemWidget extends StatelessWidget {
-
   final String title;
   final String routeName;
   const _ProfileListItemWidget({@required this.title, this.routeName});
@@ -61,7 +70,11 @@ class _ProfileListItemWidget extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Align(
             alignment: Alignment(-1, 0),
-            child: Text("$title", style: TextStyle(fontSize: 18),),),
+            child: Text(
+              "$title",
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
         ),
       ),
     );
