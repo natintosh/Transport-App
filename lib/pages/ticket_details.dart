@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class DetailsPage extends StatefulWidget {
+class TicketDetailsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _DetailsPageState();
+    return _TicketDetailsPageState();
   }
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _TicketDetailsPageState extends State<TicketDetailsPage> {
   bool isFavourite = false;
 
   _setFavourite() {
