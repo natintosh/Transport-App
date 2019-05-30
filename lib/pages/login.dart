@@ -318,7 +318,9 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
               width: double.infinity,
               child: RaisedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed("/index");
+                  if (_registerContentKey.currentState.validate()) {
+                    Navigator.of(context).pushReplacementNamed("/index");
+                  }
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
