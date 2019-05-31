@@ -1,5 +1,9 @@
+import 'dart:convert' as convert;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:transport_app/utils/secure_storage.dart';
 import 'package:transport_app/utils/url_helper.dart';
 
 class LoginPage extends StatelessWidget {
@@ -44,10 +48,19 @@ class _LoginContentState extends State<_LoginContent> {
   bool isSignInToggle = true;
   static final String signInText = "SIGN IN";
   static final String registerText = "REGISTER";
-
+  final storage = FlutterSecureStorage();
   @override
   void initState() {
+    _automaticSignIn();
     super.initState();
+  }
+
+  Future _automaticSignIn() async {
+    String token = await storage.read(key: 'token');
+
+    if (token != null) {
+      Navigator.of(context).pushReplacementNamed("/index");
+    }
   }
 
   @override
@@ -136,35 +149,44 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
   final _signInContentKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _isButtonActive = true;
+
+  void _setButtonState() {
+    setState(() {
+      _isButtonActive = !_isButtonActive;
+    });
+  }
 
   Future<Null> signInUser(
       {@required String username, @required String password}) async {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return new Container(
-            height: 100.0,
-            color: Colors.transparent, //could change this to Color(0xFF737373),
-            //so you don't have to change MaterialApp canvasColor
-            child: new Container(
-                decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(10.0),
-                        topRight: const Radius.circular(10.0))),
-                child: new Center(
-                  child: new Text("This is a modal sheet"),
-                )),
-          );
-        });
+    _setButtonState();
     String url = BaseURL + LoginEndPoint;
     var response = await http
         .post(url, body: {'username': '$username', 'password': '$password'});
 
     if (response.statusCode == 200) {
-      print(response.body);
+      Scaffold.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text('Successfully Sign In'),
+      ));
+      var jsonResponse = convert.jsonDecode(response.body);
+      SecureStorage.writeValueToKey(key: 'token', value: jsonResponse['key']);
+      Navigator.of(context).pushReplacementNamed("/index");
     } else {
-      print(response.body);
+      Scaffold.of(context).showSnackBar(SnackBar(
+          duration: Duration(seconds: 60),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text('Failed to Sign In'),
+              FlatButton(
+                  onPressed: () {
+                    Scaffold.of(context).hideCurrentSnackBar();
+                  },
+                  child: Text('close'))
+            ],
+          )));
+      _setButtonState();
     }
   }
 
@@ -236,14 +258,7 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
               height: 48,
               width: double.infinity,
               child: RaisedButton(
-                onPressed: () {
-                  if (_signInContentKey.currentState.validate()) {
-//                    Navigator.of(context).pushReplacementNamed("/index");
-                    signInUser(
-                        username: _usernameController.text,
-                        password: _passwordController.text);
-                  }
-                },
+                onPressed: _isButtonActive ? _validateAndSignIn : null,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 textColor: Colors.white,
@@ -255,6 +270,14 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
         ],
       ),
     );
+  }
+
+  void _validateAndSignIn() {
+    if (_signInContentKey.currentState.validate()) {
+      signInUser(
+          username: _usernameController.text,
+          password: _passwordController.text);
+    }
   }
 }
 

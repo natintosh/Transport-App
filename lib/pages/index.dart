@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:transport_app/pages/tickets.dart';
 import 'package:transport_app/pages/home.dart';
 import 'package:transport_app/pages/terminals.dart';
+import 'package:transport_app/pages/tickets.dart';
+import 'package:transport_app/utils/secure_storage.dart';
 
 class IndexPage extends StatelessWidget {
   @override
@@ -25,6 +26,12 @@ class _IndexContentState extends State<_IndexContent> {
   final List<Widget> tabItems = [HomePage(), TerminalPage(), TicketPage()];
 
   @override
+  void initState() {
+    SecureStorage.getValueFromKey('token').then((value) => print(value));
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -40,7 +47,10 @@ class _IndexContentState extends State<_IndexContent> {
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+                      colors: <Color>[
+                        Theme.of(context).accentColor,
+                        Colors.white
+                      ])),
             ),
           ),
           tabItems[currentIndex]
