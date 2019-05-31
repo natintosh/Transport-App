@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:transport_app/utils/url_helper.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -132,14 +134,50 @@ class _SignInFormWidget extends StatefulWidget {
 
 class _SignInFormWidgetState extends State<_SignInFormWidget> {
   final _signInContentKey = GlobalKey<FormState>();
-  final String emailRegExp =
-      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$";
-  RegExp _regExp;
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  Future<Null> signInUser(
+      {@required String username, @required String password}) async {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return new Container(
+            height: 100.0,
+            color: Colors.transparent, //could change this to Color(0xFF737373),
+            //so you don't have to change MaterialApp canvasColor
+            child: new Container(
+                decoration: new BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: new BorderRadius.only(
+                        topLeft: const Radius.circular(10.0),
+                        topRight: const Radius.circular(10.0))),
+                child: new Center(
+                  child: new Text("This is a modal sheet"),
+                )),
+          );
+        });
+    String url = BaseURL + LoginEndPoint;
+    var response = await http
+        .post(url, body: {'username': '$username', 'password': '$password'});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      print(response.body);
+    }
+  }
 
   @override
   void initState() {
-    _regExp = RegExp(emailRegExp);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -158,17 +196,15 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: _usernameController,
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 20.0),
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          hintText: "Email", border: InputBorder.none),
+                          hintText: "Username", border: InputBorder.none),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Please Enter Email';
-                        }
-                        if (!_regExp.hasMatch(value)) {
-                          return 'Incorrect Email';
+                          return 'Please Enter Username';
                         }
                       },
                     ),
@@ -181,6 +217,7 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: _passwordController,
                       style: TextStyle(fontSize: 20.0),
                       obscureText: true,
                       textInputAction: TextInputAction.next,
@@ -201,7 +238,10 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
               child: RaisedButton(
                 onPressed: () {
                   if (_signInContentKey.currentState.validate()) {
-                    Navigator.of(context).pushReplacementNamed("/index");
+//                    Navigator.of(context).pushReplacementNamed("/index");
+                    signInUser(
+                        username: _usernameController.text,
+                        password: _passwordController.text);
                   }
                 },
                 shape: RoundedRectangleBorder(
@@ -228,8 +268,13 @@ class _RegisterFormWidget extends StatefulWidget {
 class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
   final _registerContentKey = GlobalKey<FormState>();
   final String emailRegExp =
-      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$";
+      "^([a-z0-9,!#\\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+(\\.[a-z0-9,!#\\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.([a-z]{2,})){1}(;[a-z0-9,!#\\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+(\\.[a-z0-9,!#\\\$%&'\\*\\+/=\\?\\^_`\\{\\|}~-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.([a-z]{2,}))*\$";
+
   RegExp _regExp;
+
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -253,6 +298,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: _usernameController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20.0),
                       textInputAction: TextInputAction.next,
@@ -276,6 +322,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 20.0),
                       textInputAction: TextInputAction.next,
@@ -299,6 +346,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                   child: Padding(
                     padding: EdgeInsets.all(8),
                     child: TextFormField(
+                      controller: _passwordController,
                       style: TextStyle(fontSize: 20.0),
                       obscureText: true,
                       textInputAction: TextInputAction.next,
