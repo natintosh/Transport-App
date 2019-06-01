@@ -10,10 +10,11 @@ class TransportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(company.id);
     return TransportPageContent(
       name: company.name,
       imageUrl: company.imageUrl,
-      description:company.description,
+      description: company.description,
       tag: tag,
     );
   }
@@ -73,7 +74,8 @@ class _TransportPageContentState extends State<TransportPageContent> {
             SliverList(
                 delegate: SliverChildListDelegate(<Widget>[
               _TransportDetailsCard(
-                  details: widget.description,),
+                details: widget.description,
+              ),
               _TransportDestinationCard(destination: <String>[]),
               _TransportBookTicket(),
             ]))

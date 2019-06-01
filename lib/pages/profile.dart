@@ -19,8 +19,6 @@ class _ProfilePageContent extends StatefulWidget {
   }
 }
 
-enum ProfileMenu { Details, Preferences, MyTripDetails, SendFeedback, About }
-
 class _ProfilePageContentState extends State<_ProfilePageContent> {
   final storage = FlutterSecureStorage();
 
@@ -46,15 +44,7 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
           ),
           _ProfileListItemWidget(title: "Preferences"),
           _ProfileListItemWidget(
-              title: "My Trip Details", routeName: "/trip-details"),
-          _ProfileListItemWidget(
-            title: "Send Feedback",
-            routeName: "/feedback",
-          ),
-          _ProfileListItemWidget(
-            title: "About",
-            routeName: "/about",
-          ),
+              title: "Edit Details", routeName: "/trip-details"),
           _ProfileListItemWidget(
             title: "sign Out",
             routeName: null,

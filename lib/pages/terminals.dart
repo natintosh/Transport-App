@@ -39,12 +39,16 @@ class _TerminalPageContentState extends State<TerminalPageContent> {
 
     if (response.statusCode == 200) {
       List<Company> mapped = (jsonDecode(response.body) as List)
-          .map((company) => Company(
-              name: "${company['name']}",
-              description: "${company["description"]}",
-              imageUrl: "$BaseURL${company["transportation_line_logo"]}"))
+          .asMap()
+          .map((index, company) => MapEntry(
+              index,
+              Company(
+                  id: index + 1,
+                  name: "${company['name']}",
+                  description: "${company["description"]}",
+                  imageUrl: "$BaseURL${company["transportation_line_logo"]}")))
+          .values
           .toList();
-
 
       if (this.mounted) {
         setState(() {
@@ -57,28 +61,32 @@ class _TerminalPageContentState extends State<TerminalPageContent> {
   void openTransportPage(int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TransportPage(
-            company: companiesObject[index],
-            tag: "companyLogo-$index")));
+            company: companiesObject[index], tag: "companyLogo-$index")));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: companiesObject != null ? companiesObject.length : 0,
-        itemBuilder: (context, index) {
-          String companyName = "${companiesObject[index].name}";
-          String imageUrl =
-              "${companiesObject[index].imageUrl}";
-          String description = "${companiesObject[index].description}";
+    return (companiesObject == null)
+        ? Center(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.green,
+            ),
+          )
+        : ListView.builder(
+            itemCount: companiesObject != null ? companiesObject.length : 0,
+            itemBuilder: (context, index) {
+              String companyName = "${companiesObject[index].name}";
+              String imageUrl = "${companiesObject[index].imageUrl}";
+              String description = "${companiesObject[index].description}";
 
-          return _TransportCardWidget(
-            id: index,
-            name: companyName,
-            imageUrl: imageUrl,
-            about: description,
-            onTap: () => openTransportPage(index),
-          );
-        });
+              return _TransportCardWidget(
+                id: index,
+                name: companyName,
+                imageUrl: imageUrl,
+                about: description,
+                onTap: () => openTransportPage(index),
+              );
+            });
   }
 }
 

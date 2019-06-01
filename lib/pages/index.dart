@@ -59,8 +59,6 @@ class _IndexContentState extends State<_IndexContent> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
         onTap: (int index) {
           setState(() {
             currentIndex = index;
@@ -69,9 +67,9 @@ class _IndexContentState extends State<_IndexContent> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.directions_bus), title: Text("Terminal")),
+              icon: Icon(Icons.directions_bus), title: Text("Terminals")),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_play), title: Text("Favourites")),
+              icon: Icon(Icons.local_play), title: Text("History")),
         ],
       ),
     );

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class MyTripDetailsPage extends StatelessWidget {
@@ -6,7 +9,7 @@ class MyTripDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Trip Details'),
+        title: Text('Edit Details'),
       ),
       body: _MyTripDetailsContent(),
     );
@@ -30,6 +33,16 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
   TextEditingController _nextOfKinPhoneNumberController =
       TextEditingController();
 
+  File _image;
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
   void _setDateOfBirth(DateTime date) {
     dateOfBirth = date;
   }
@@ -41,8 +54,37 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
         padding: EdgeInsets.only(left: 12.0, right: 12.0),
         child: Column(
           children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Stack(
+                children: <Widget>[
+                  CircleAvatar(
+                    backgroundImage: (_image == null)
+                        ? AssetImage('assets/images/ic_profile.png')
+                        : FileImage(_image),
+                    maxRadius: 72,
+                    backgroundColor: Colors.grey,
+                  ),
+                  Positioned(
+                    bottom: 1,
+                    right: 1,
+                    child: Tooltip(
+                      message: 'Edit Profile Picture',
+                      child: FlatButton(
+                        shape: CircleBorder(),
+                        color: Colors.yellowAccent,
+                        onPressed: getImage,
+                        child: SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Icon(Icons.add_photo_alternate)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             _DetailTextFieldWidget(
-              key: UniqueKey(),
               title: 'First Name',
               controller: _firstNameController,
             ),
@@ -52,31 +94,38 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
               controller: _lastNameController,
             ),
             _DetailCalenderWidget(
-                key: UniqueKey(),
-                title: 'Date of Birth',
-                onDateChanged: _setDateOfBirth),
+                title: 'Date of Birth', onDateChanged: _setDateOfBirth),
             _DetailTextFieldWidget(
-              key: UniqueKey(),
               title: 'Phone Number',
               controller: _phoneNumberController,
               textInputType: TextInputType.phone,
             ),
             _DetailTextFieldWidget(
-              key: UniqueKey(),
               title: 'Address',
               controller: _addressController,
             ),
             _DetailTextFieldWidget(
-              key: UniqueKey(),
               title: 'Next of Kin',
               controller: _nextOfKinController,
             ),
             _DetailTextFieldWidget(
-              key: UniqueKey(),
               title: 'Next of Kin Phone Number',
               controller: _nextOfKinPhoneNumberController,
               textInputType: TextInputType.phone,
             ),
+            Padding(
+              padding: EdgeInsets.only(top: 8, bottom: 9),
+              child: SizedBox(
+                height: 42,
+                width: double.infinity,
+                child: RaisedButton(
+                  onPressed: () {},
+                  color: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                  child: Text('SUBMIT'),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -102,12 +151,6 @@ class _DetailTextFieldWidget extends StatefulWidget {
 }
 
 class _DetailTextFieldWidgetState extends State<_DetailTextFieldWidget> {
-  @override
-  void dispose() {
-    widget.controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
