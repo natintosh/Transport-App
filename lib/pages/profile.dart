@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:transport_app/utils/url_helper.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -19,6 +22,8 @@ class _ProfilePageContent extends StatefulWidget {
 enum ProfileMenu { Details, Preferences, MyTripDetails, SendFeedback, About }
 
 class _ProfilePageContentState extends State<_ProfilePageContent> {
+  final storage = FlutterSecureStorage();
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -50,22 +55,51 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
             title: "About",
             routeName: "/about",
           ),
+          _ProfileListItemWidget(
+            title: "sign Out",
+            routeName: null,
+            callback: _signOut,
+          ),
         ]))
       ],
     );
+  }
+
+  Future _signOut() async {
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text('Successfully sign out')));
+
+    String url = BaseURL + LogoutEndPoint;
+    String authToken = 'Token ${await storage.read(key: 'token')}';
+
+    var response = await http.post(url, headers: {'Authorization': authToken});
+
+    if (response.statusCode == 200) {
+      await storage.delete(key: 'token');
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+    }
   }
 }
 
 class _ProfileListItemWidget extends StatelessWidget {
   final String title;
   final String routeName;
-  const _ProfileListItemWidget({@required this.title, this.routeName});
+  final VoidCallback callback;
+  const _ProfileListItemWidget(
+      {@required this.title, this.routeName, this.callback});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 52,
       child: InkWell(
-        onTap: () => Navigator.of(context).pushNamed(routeName),
+        onTap: () {
+          if (routeName != null) {
+            Navigator.of(context).pushNamed(routeName);
+          } else {
+            callback();
+          }
+        },
         child: Padding(
           padding: EdgeInsets.all(16),
           child: Align(
@@ -97,6 +131,7 @@ class _ProfilePictureWidget extends StatelessWidget {
         ),
       ),
       CircleAvatar(
+        backgroundImage: AssetImage('assets/images/ic_profile.png'),
         maxRadius: screenSize.width * 0.25,
         backgroundColor: Colors.grey,
       )

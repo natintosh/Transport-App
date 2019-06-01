@@ -10,6 +10,23 @@ class SearchPage extends StatelessWidget {
 }
 
 class _SearchContent extends StatefulWidget {
+  List<String> _getDestination() {
+    List<String> destination = [
+      "Lagos",
+      "Abuja",
+      "Enugu",
+      "Ibadan",
+      "Imo",
+      "Benin",
+      "Calabar",
+      "Ogun",
+      "Delta",
+      "Edo",
+    ];
+
+    return destination;
+  }
+
   @override
   State<StatefulWidget> createState() {
     return _SearchContentState();
@@ -17,11 +34,18 @@ class _SearchContent extends StatefulWidget {
 }
 
 class _SearchContentState extends State<_SearchContent> {
-  TextEditingController _searchTextController = TextEditingController();
+  String _destinationValue;
+  String _originValue;
 
-  void _onClearSearch() {
+  void _setDestinationValue(String value) {
     setState(() {
-      _searchTextController.clear();
+      _destinationValue = value;
+    });
+  }
+
+  void _setOriginValue(String value) {
+    setState(() {
+      _originValue = value;
     });
   }
 
@@ -30,6 +54,7 @@ class _SearchContentState extends State<_SearchContent> {
     return Column(
       children: <Widget>[
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             CloseButton(),
             Expanded(
@@ -37,27 +62,43 @@ class _SearchContentState extends State<_SearchContent> {
                 tag: 'searchCardHero',
                 child: Material(
                   child: Card(
-                      shape: StadiumBorder(),
-                      elevation: 8,
-                      margin: EdgeInsets.all(8),
-                      child: InkWell(
-                        onTap: () {},
-                        customBorder: StadiumBorder(),
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 2.0),
-                          child: TextFormField(
-                            controller: _searchTextController,
-                            style: TextStyle(fontSize: 20.0),
-                            textInputAction: TextInputAction.search,
-                            decoration: InputDecoration(
-                                hintText: "Search",
-                                border: InputBorder.none,
-                                suffixIcon: IconButton(
-                                    icon: Icon(Icons.cancel),
-                                    onPressed: _onClearSearch)),
-                          ),
-                        ),
-                      )),
+                    elevation: 8,
+                    margin: EdgeInsets.all(8),
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          DropdownButton<String>(
+                              items: widget
+                                  ._getDestination()
+                                  .map((destination) =>
+                                      DropdownMenuItem<String>(
+                                          value: destination,
+                                          child: Text(destination)))
+                                  .toList(),
+                              value: _originValue,
+                              onChanged: _setOriginValue),
+                          Icon(Icons.directions_bus),
+                          DropdownButton<String>(
+                              items: widget
+                                  ._getDestination()
+                                  .map((destination) =>
+                                      DropdownMenuItem<String>(
+                                          value: destination,
+                                          child: Text(destination)))
+                                  .toList(),
+                              value: _destinationValue,
+                              onChanged: _setDestinationValue),
+                          IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () {},
+                            tooltip: 'Search',
+                            color: Colors.green,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             )
@@ -73,15 +114,7 @@ class _SearchContentState extends State<_SearchContent> {
   Widget buildSearchResultList() {
     return ListView.separated(
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Placeholder(
-              fallbackHeight: 20,
-            ),
-            subtitle: Placeholder(
-              fallbackHeight: 20,
-            ),
-            trailing: Icon(Icons.chevron_right),
-          );
+          return ListTile();
         },
         separatorBuilder: (context, index) => Divider(),
         itemCount: 10);

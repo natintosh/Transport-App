@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
-import 'dart:async' show Future;
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:transport_app/models/company.dart';
 import 'package:transport_app/pages/transport.dart';
+import 'package:transport_app/utils/url_helper.dart';
 
 class TerminalPage extends StatelessWidget {
   @override
@@ -19,7 +22,8 @@ class TerminalPageContent extends StatefulWidget {
 }
 
 class _TerminalPageContentState extends State<TerminalPageContent> {
-  static Map<String, dynamic> companiesObject;
+  final storage = FlutterSecureStorage();
+  static List<Company> companiesObject;
 
   @override
   void initState() {
@@ -28,35 +32,50 @@ class _TerminalPageContentState extends State<TerminalPageContent> {
   }
 
   Future loadCompanyAsset() async {
-    String jsonData = await rootBundle.loadString('assets/company.json', cache: true);
-    setState(() {
-      companiesObject = jsonDecode(jsonData);
-    });
-  }
+    String url = BaseURL + TransportEndPoint;
+    String authToken = 'Token ${await storage.read(key: 'token')}';
 
+    var response = await http.get(url, headers: {'Authorization': authToken});
+
+    if (response.statusCode == 200) {
+      List<Company> mapped = (jsonDecode(response.body) as List)
+          .map((company) => Company(
+              name: "${company['name']}",
+              description: "${company["description"]}",
+              imageUrl: "$BaseURL${company["transportation_line_logo"]}"))
+          .toList();
+
+
+      if (this.mounted) {
+        setState(() {
+          companiesObject = mapped;
+        });
+      }
+    }
+  }
 
   void openTransportPage(int index) {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => TransportPage(
-            name: "${companiesObject["data"][index]["companyName"]}",
-            imageUrl: "${companiesObject["data"][index]["image"]}",
+            company: companiesObject[index],
             tag: "companyLogo-$index")));
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: companiesObject != null ? companiesObject["data"].length : 0,
+        itemCount: companiesObject != null ? companiesObject.length : 0,
         itemBuilder: (context, index) {
-          String companyName = "${companiesObject["data"][index]["companyName"]}";
-          String imageUrl = "${companiesObject["data"][index]["image"]}";
-          String motto = "${companiesObject["data"][index]["motto"]}";
+          String companyName = "${companiesObject[index].name}";
+          String imageUrl =
+              "${companiesObject[index].imageUrl}";
+          String description = "${companiesObject[index].description}";
 
           return _TransportCardWidget(
             id: index,
             name: companyName,
             imageUrl: imageUrl,
-            about: motto,
+            about: description,
             onTap: () => openTransportPage(index),
           );
         });

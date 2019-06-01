@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:transport_app/models/company.dart';
 
 class TransportPage extends StatelessWidget {
-  final String name;
-  final String imageUrl;
+  final Company company;
   final String tag;
 
-  TransportPage({this.name, this.imageUrl, this.tag});
+  TransportPage({this.company, this.tag});
 
   @override
   Widget build(BuildContext context) {
     return TransportPageContent(
-      name: name,
-      imageUrl: imageUrl,
+      name: company.name,
+      imageUrl: company.imageUrl,
+      description:company.description,
       tag: tag,
     );
   }
@@ -21,9 +22,10 @@ class TransportPage extends StatelessWidget {
 class TransportPageContent extends StatefulWidget {
   final String name;
   final String imageUrl;
+  final String description;
   final String tag;
 
-  TransportPageContent({this.name, this.imageUrl, this.tag});
+  TransportPageContent({this.name, this.imageUrl, this.description, this.tag});
 
   @override
   State<StatefulWidget> createState() {
@@ -71,8 +73,7 @@ class _TransportPageContentState extends State<TransportPageContent> {
             SliverList(
                 delegate: SliverChildListDelegate(<Widget>[
               _TransportDetailsCard(
-                  details:
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ut vestibulum eros, vel elementum nisi. Donec dolor magna, euismod sit amet mi et, rhoncus vulputate lectus. Curabitur placerat condimentum mi."),
+                  details: widget.description,),
               _TransportDestinationCard(destination: <String>[]),
               _TransportBookTicket(),
             ]))

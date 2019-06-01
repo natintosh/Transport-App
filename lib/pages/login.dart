@@ -6,7 +6,37 @@ import 'package:http/http.dart' as http;
 import 'package:transport_app/utils/secure_storage.dart';
 import 'package:transport_app/utils/url_helper.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _LoginPageState();
+  }
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final storage = FlutterSecureStorage();
+
+  Future _automaticSignIn() async {
+    String token = await storage.read(key: 'token');
+
+    if (token != null) {
+      Navigator.of(context).pushReplacementNamed("/index");
+    }
+  }
+
+  @override
+  void initState() {
+    _automaticSignIn();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LoginPageScaffold();
+  }
+}
+
+class LoginPageScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,20 +78,6 @@ class _LoginContentState extends State<_LoginContent> {
   bool isSignInToggle = true;
   static final String signInText = "SIGN IN";
   static final String registerText = "REGISTER";
-  final storage = FlutterSecureStorage();
-  @override
-  void initState() {
-    _automaticSignIn();
-    super.initState();
-  }
-
-  Future _automaticSignIn() async {
-    String token = await storage.read(key: 'token');
-
-    if (token != null) {
-      Navigator.of(context).pushReplacementNamed("/index");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +237,6 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
                       controller: _usernameController,
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 20.0),
-                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Username", border: InputBorder.none),
                       validator: (value) {
@@ -242,7 +257,6 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
                       controller: _passwordController,
                       style: TextStyle(fontSize: 20.0),
                       obscureText: true,
-                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Password", border: InputBorder.none),
                       validator: (value) {
@@ -298,6 +312,72 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _isButtonActive = true;
+
+  void _setButtonState() {
+    setState(() {
+      _isButtonActive = !_isButtonActive;
+    });
+  }
+
+  Future registerUser(
+      {@required username, @required email, @required password}) async {
+    _setButtonState();
+    String url = BaseURL + RegisterEndPoint;
+    var response = await http.post(url, body: {
+      'username': '$username',
+      'email': '$email',
+      'password1': '$password',
+      'password2': '$password'
+    });
+
+    if (response.statusCode == 201) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text('Successfully Register'),
+      ));
+      var jsonResponse = convert.jsonDecode(response.body);
+      SecureStorage.writeValueToKey(key: 'token', value: jsonResponse['key']);
+      Navigator.of(context).pushReplacementNamed("/trip-details");
+    } else {
+      try {
+        var jsonResponse = convert.jsonDecode(response.body);
+
+        if (jsonResponse['username'] != null && jsonResponse['email'] != null) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+              duration: Duration(seconds: 60),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                      '${jsonResponse['username']} \n ${jsonResponse['email']}'),
+                  FlatButton(
+                      onPressed: () {
+                        Scaffold.of(context).hideCurrentSnackBar();
+                      },
+                      child: Text('close'))
+                ],
+              )));
+        }
+      } catch (exception) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 60),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text('Failed to Sign In'),
+                FlatButton(
+                    onPressed: () {
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
+                    child: Text('close'))
+              ],
+            )));
+      } finally {
+        _setButtonState();
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -324,7 +404,6 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                       controller: _usernameController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(fontSize: 20.0),
-                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Username", border: InputBorder.none),
                       validator: (value) {
@@ -348,7 +427,6 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 20.0),
-                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Email", border: InputBorder.none),
                       validator: (value) {
@@ -372,7 +450,6 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
                       controller: _passwordController,
                       style: TextStyle(fontSize: 20.0),
                       obscureText: true,
-                      textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                           hintText: "Password", border: InputBorder.none),
                       validator: (value) {
@@ -388,11 +465,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
               height: 48,
               width: double.infinity,
               child: RaisedButton(
-                onPressed: () {
-                  if (_registerContentKey.currentState.validate()) {
-                    Navigator.of(context).pushReplacementNamed("/index");
-                  }
-                },
+                onPressed: _isButtonActive ? _validateAndRegister : null,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 textColor: Colors.white,
@@ -404,5 +477,14 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
         ],
       ),
     );
+  }
+
+  void _validateAndRegister() {
+    if (_registerContentKey.currentState.validate()) {
+      registerUser(
+          username: _usernameController.text,
+          email: _emailController.text,
+          password: _passwordController.text);
+    }
   }
 }

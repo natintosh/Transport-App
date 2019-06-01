@@ -108,10 +108,13 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                           textInputAction: TextInputAction.search,
                           enabled: false,
                           decoration: InputDecoration(
-                              hintText: "Search Destination", border: InputBorder.none),
+                              hintText: "Search Destination",
+                              border: InputBorder.none),
                         ),
                       ),
                       CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/ic_profile.png'),
                         backgroundColor: Colors.grey,
                         child: InkWell(
                           customBorder: CircleBorder(),
@@ -179,7 +182,7 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
             style: TextStyle(fontSize: 14),
           ),
           Text(
-            "MNT",
+            "---",
             style: TextStyle(fontSize: 22),
           ),
         ],
@@ -193,10 +196,10 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          DetailsTextWidget("Depart", "17:00"),
-          DetailsTextWidget("Arrive", "02:00"),
-          DetailsTextWidget("Terminal", "03"),
-          DetailsTextWidget("Quantity", "1")
+          DetailsTextWidget("Depart", "--:--"),
+          DetailsTextWidget("Arrive", "--:--"),
+          DetailsTextWidget("Terminal", "--"),
+          DetailsTextWidget("Quantity", "--")
         ],
       ),
     );
@@ -207,8 +210,8 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
       children: <Widget>[
         Expanded(
           child: DetailsTextWidget(
-            "Lagos",
-            "LAG",
+            "",
+            "---",
             headerFontSize: 20,
             contentFontSize: 40,
           ),
@@ -223,8 +226,8 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
         ),
         Expanded(
           child: DetailsTextWidget(
-            "Kaduna",
-            "KAD",
+            "",
+            "---",
             headerFontSize: 20,
             contentFontSize: 40,
           ),
