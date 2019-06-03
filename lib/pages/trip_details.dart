@@ -1,8 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:transport_app/models/user_model.dart';
+import 'package:transport_app/utils/url_helper.dart';
 
 class MyTripDetailsPage extends StatelessWidget {
   @override
@@ -24,6 +28,8 @@ class _MyTripDetailsContent extends StatefulWidget {
 }
 
 class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
+  final storage = FlutterSecureStorage();
+
   DateTime dateOfBirth = DateTime.now();
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -35,6 +41,8 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
 
   File _image;
 
+  bool _isButtonEnabled = true;
+
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -44,7 +52,27 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
   }
 
   void _setDateOfBirth(DateTime date) {
-    dateOfBirth = date;
+    setState(() {
+      dateOfBirth = date;
+    });
+  }
+
+  void _setButton() {
+    setState(() {
+      _isButtonEnabled = !_isButtonEnabled;
+    });
+  }
+
+  @override
+  void initState() {
+    _firstNameController.text = '${userInstance.user.firstName ?? ''}';
+    _lastNameController.text = '${userInstance.user.lastName ?? ''}';
+    _phoneNumberController.text = '${userInstance.user.phoneNumber ?? ''}';
+    _addressController.text = '${userInstance.user.address ?? ''}';
+    _nextOfKinController.text = '${userInstance.user.nextOfKin ?? ''}';
+    _nextOfKinPhoneNumberController.text =
+        '${userInstance.user.nextOfKinPhoneNumber ?? ''}';
+    super.initState();
   }
 
   @override
@@ -94,7 +122,9 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
               controller: _lastNameController,
             ),
             _DetailCalenderWidget(
-                title: 'Date of Birth', onDateChanged: _setDateOfBirth),
+                title: 'Date of Birth',
+                date: dateOfBirth,
+                onDateChanged: _setDateOfBirth),
             _DetailTextFieldWidget(
               title: 'Phone Number',
               controller: _phoneNumberController,
@@ -119,7 +149,11 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
                 height: 42,
                 width: double.infinity,
                 child: RaisedButton(
-                  onPressed: () {},
+                  onPressed: !_isButtonEnabled
+                      ? null
+                      : () {
+                          _updateUserDetails();
+                        },
                   color: Theme.of(context).primaryColor,
                   textColor: Colors.white,
                   child: Text('SUBMIT'),
@@ -130,6 +164,30 @@ class _MyTripDetailsContentState extends State<_MyTripDetailsContent> {
         ),
       ),
     );
+  }
+
+  Future _updateUserDetails() async {
+    _setButton();
+
+    String url = BaseURL + UserEndPoint;
+    String authToken = 'Token ${await storage.read(key: 'token')}';
+
+    var client = http.Client();
+    try {
+      var userResponse = await client.patch(url, headers: {
+        'Authorization': authToken
+      }, body: {
+        'first_name': _firstNameController.text,
+        'last_name': _lastNameController.text
+      });
+      if (userResponse.statusCode == HttpStatus.ok) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/index', (router) => false);
+      }
+    } finally {
+      print(userInstance.user.username);
+      client.close();
+    }
   }
 }
 
@@ -174,9 +232,13 @@ class _DetailTextFieldWidgetState extends State<_DetailTextFieldWidget> {
 class _DetailCalenderWidget extends StatefulWidget {
   final String title;
   final ValueChanged<DateTime> onDateChanged;
+  final DateTime date;
 
   const _DetailCalenderWidget(
-      {Key key, @required this.title, @required this.onDateChanged})
+      {Key key,
+      @required this.title,
+      @required this.onDateChanged,
+      @required this.date})
       : super(key: key);
 
   @override
@@ -186,11 +248,8 @@ class _DetailCalenderWidget extends StatefulWidget {
 }
 
 class _DetailCalenderWidgetState extends State<_DetailCalenderWidget> {
-  DateTime selectedDate = DateTime.now();
-
   void _setSelectedDate(DateTime date) {
     setState(() {
-      selectedDate = date;
       widget.onDateChanged(date);
     });
   }
@@ -204,7 +263,7 @@ class _DetailCalenderWidgetState extends State<_DetailCalenderWidget> {
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
         context: context,
-        initialDate: selectedDate,
+        initialDate: widget.date,
         firstDate: DateTime(1900),
         lastDate: DateTime(2120));
 
@@ -224,7 +283,7 @@ class _DetailCalenderWidgetState extends State<_DetailCalenderWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(getFormattedDate(selectedDate)),
+                Text(getFormattedDate(widget.date)),
                 IconButton(
                     icon: Icon(Icons.date_range),
                     onPressed: () => _selectDate(context))

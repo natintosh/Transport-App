@@ -42,7 +42,10 @@ class FavouritePageContentState extends State<FavouritePageContent> {
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: <Color>[Theme.of(context).accentColor, Colors.white])),
+                    colors: <Color>[
+                      Theme.of(context).accentColor,
+                      Colors.white
+                    ])),
           ),
         ),
         PageView.builder(
@@ -98,7 +101,7 @@ class ActivePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 2,
+        itemCount: 0,
         itemBuilder: (context, index) {
           Widget item = index == 0
               ? SizedBox(
@@ -159,7 +162,7 @@ class ExpiredPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 4,
+        itemCount: 0,
         itemBuilder: (context, index) {
           Widget item = index == 0
               ? SizedBox(

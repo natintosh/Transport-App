@@ -8,14 +8,6 @@ class TicketDetailsPage extends StatefulWidget {
 }
 
 class _TicketDetailsPageState extends State<TicketDetailsPage> {
-  bool isFavourite = false;
-
-  _setFavourite() {
-    setState(() {
-      isFavourite = !isFavourite;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,17 +15,6 @@ class _TicketDetailsPageState extends State<TicketDetailsPage> {
         elevation: 0.0,
         backgroundColor: Colors.transparent,
         iconTheme: IconThemeData(color: Colors.black),
-        actions: <Widget>[
-          IconButton(
-              icon: isFavourite
-                  ? Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    )
-                  : Icon(Icons.favorite_border),
-              tooltip: "Favorite",
-              onPressed: _setFavourite)
-        ],
       ),
       backgroundColor: Theme.of(context).primaryColorLight,
       body: SafeArea(child: DetailsPageContent()),
@@ -65,10 +46,10 @@ class _DetailPageContentState extends State<DetailsPageContent> {
 
   Map<String, String> getMappedItem() {
     Map<String, String> map = Map();
-    map.putIfAbsent("Depart", () => "17:00");
-    map.putIfAbsent("Arrive", () => "02:00");
-    map.putIfAbsent("Terminal", () => "03");
-    map.putIfAbsent("Quantity", () => "1");
+    map.putIfAbsent("Depart", () => "--:--");
+    map.putIfAbsent("Arrive", () => "--:--");
+    map.putIfAbsent("Terminal", () => "--");
+    map.putIfAbsent("Quantity", () => "--");
     return map;
   }
 }
@@ -146,7 +127,7 @@ class _DestinationCardWidget extends StatelessWidget {
             child: _LocationTileWidget(
               status: LocationStatus.from,
               direction: "From",
-              place: "Lagos, LAG",
+              place: "---",
             ),
           ),
           Divider(),
@@ -154,7 +135,7 @@ class _DestinationCardWidget extends StatelessWidget {
             child: _LocationTileWidget(
               status: LocationStatus.to,
               direction: "To",
-              place: "Kaduna, KAD",
+              place: "---",
             ),
           )
         ],

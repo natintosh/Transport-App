@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:transport_app/models/user_model.dart';
 import 'package:transport_app/utils/url_helper.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -23,6 +27,36 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
   final storage = FlutterSecureStorage();
 
   @override
+  void initState() {
+    _updateProfile();
+    super.initState();
+  }
+
+  Future _updateProfile() async {
+    String url = BaseURL + UserEndPoint;
+    String authToken = 'Token ${await storage.read(key: 'token')}';
+
+    var client = http.Client();
+    try {
+      var userResponse =
+          await client.get(url, headers: {'Authorization': authToken});
+      if (userResponse.statusCode == HttpStatus.ok) {
+        var userData = jsonDecode(userResponse.body);
+        userInstance.user = User(
+          id: userData['pk'],
+          username: userData['username'],
+          email: userData['email'],
+          firstName: userData['first_name'],
+          lastName: userData['last_name'],
+        );
+      }
+    } finally {
+      print(userInstance.user.username);
+      client.close();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
 
@@ -30,7 +64,7 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
       slivers: <Widget>[
         SliverAppBar(
             centerTitle: true,
-            title: Text("John Doe"),
+            title: Text('${userInstance.user.username}'),
             expandedHeight: screenSize.width * 0.8,
             backgroundColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
@@ -120,10 +154,13 @@ class _ProfilePictureWidget extends StatelessWidget {
           ),
         ),
       ),
-      CircleAvatar(
-        backgroundImage: AssetImage('assets/images/ic_profile.png'),
-        maxRadius: screenSize.width * 0.25,
-        backgroundColor: Colors.grey,
+      Hero(
+        tag: 'profilePictureTag',
+        child: CircleAvatar(
+          backgroundImage: AssetImage('assets/images/ic_profile.png'),
+          maxRadius: screenSize.width * 0.25,
+          backgroundColor: Colors.grey,
+        ),
       )
     ]);
   }

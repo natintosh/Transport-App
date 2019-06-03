@@ -86,49 +86,69 @@ class SearchBarWidget extends StatefulWidget {
 class _SearchBarWidgetState extends State<SearchBarWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Hero(
-        tag: 'searchCardHero',
-        child: Material(
-          child: Card(
-              shape: StadiumBorder(),
-              elevation: 4,
-              margin: EdgeInsets.all(8),
-              child: InkWell(
-                onTap: widget.onTap,
-                customBorder: StadiumBorder(),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(24.0, 2.0, 8.0, 2.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 8,
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Container(
+            child: Hero(
+              tag: 'searchCardHero',
+              child: Material(
+                child: Card(
+                    shape: StadiumBorder(),
+                    elevation: 4,
+                    margin: EdgeInsets.all(8),
+                    child: InkWell(
+                      onTap: widget.onTap,
+                      customBorder: StadiumBorder(),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(24.0, 2.0, 8.0, 2.0),
                         child: TextFormField(
                           style: TextStyle(fontSize: 20.0),
                           textInputAction: TextInputAction.search,
                           enabled: false,
                           decoration: InputDecoration(
-                              hintText: "Search Destination",
-                              border: InputBorder.none),
+                              hintText: "Search", border: InputBorder.none),
                         ),
                       ),
-                      CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/ic_profile.png'),
-                        backgroundColor: Colors.grey,
-                        child: InkWell(
-                          customBorder: CircleBorder(),
-                          onTap: () {
-                            Navigator.of(context).pushNamed('/profile');
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )),
+                    )),
+              ),
+            ),
+          ),
         ),
-      ),
+        Card(
+            shape: StadiumBorder(),
+            elevation: 4,
+            margin: EdgeInsets.all(8),
+            child: InkWell(
+              customBorder: StadiumBorder(),
+              onTap: () {
+                Navigator.of(context).pushNamed('/profile');
+              },
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Hero(
+                        tag: 'profilePictureTag',
+                        child: Material(
+                          child: CircleAvatar(
+                            backgroundImage:
+                                AssetImage('assets/images/ic_profile.png'),
+                            backgroundColor: Colors.grey,
+                          ),
+                        )),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text('Profile',
+                        style: TextStyle(
+                            fontSize: 16.0, color: Theme.of(context).hintColor))
+                  ],
+                ),
+              ),
+            ))
+      ],
     );
   }
 }

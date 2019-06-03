@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:transport_app/models/company.dart';
+import 'package:transport_app/models/company_model.dart';
 
 class TransportPage extends StatelessWidget {
   final Company company;

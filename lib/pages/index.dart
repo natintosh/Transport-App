@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:transport_app/models/user_model.dart';
 import 'package:transport_app/pages/home.dart';
 import 'package:transport_app/pages/terminals.dart';
 import 'package:transport_app/pages/tickets.dart';
-import 'package:transport_app/utils/secure_storage.dart';
+import 'package:transport_app/utils/url_helper.dart';
 
 class IndexPage extends StatelessWidget {
   @override
@@ -24,11 +30,38 @@ class _IndexContent extends StatefulWidget {
 class _IndexContentState extends State<_IndexContent> {
   var currentIndex = 0;
   final List<Widget> tabItems = [HomePage(), TerminalPage(), TicketPage()];
+  bool _inactive = true;
+
+  final storage = FlutterSecureStorage();
 
   @override
   void initState() {
-    SecureStorage.getValueFromKey('token').then((value) => print(value));
+    _initialSetUp();
     super.initState();
+  }
+
+  Future _initialSetUp() async {
+    String url = BaseURL + UserEndPoint;
+    String authToken = 'Token ${await storage.read(key: 'token')}';
+
+    var client = http.Client();
+    try {
+      var userResponse =
+          await client.get(url, headers: {'Authorization': authToken});
+      if (userResponse.statusCode == HttpStatus.ok) {
+        var userData = jsonDecode(userResponse.body);
+        userInstance.user = User(
+          id: userData['pk'],
+          username: userData['username'],
+          email: userData['email'],
+          firstName: userData['first_name'],
+          lastName: userData['last_name'],
+        );
+      }
+    } finally {
+      print(userInstance.user.username);
+      client.close();
+    }
   }
 
   @override

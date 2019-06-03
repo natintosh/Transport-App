@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transport_app/models/user_model.dart';
 
 class UserDetailsPage extends StatelessWidget {
   @override
@@ -32,32 +33,40 @@ class _UserDetailsContentState extends State<_UserDetailsContent> {
         SliverList(
             delegate: SliverChildListDelegate(<Widget>[
           ListTile(
+            title: Text('Username'),
+            subtitle: Text('${userInstance.user.username ?? ''}'),
+          ),
+          ListTile(
+            title: Text('Email'),
+            subtitle: Text('${userInstance.user.email ?? ''}'),
+          ),
+          ListTile(
             title: Text('First Name'),
-            subtitle: Text('John'),
+            subtitle: Text('${userInstance.user.firstName ?? ''}'),
           ),
           ListTile(
             title: Text('Last Name'),
-            subtitle: Text('Doe'),
+            subtitle: Text('${userInstance.user.lastName ?? ''}'),
           ),
           ListTile(
             title: Text('Date of Birth'),
-            subtitle: Text('Tuesday, 29th May 1959'),
+            subtitle: Text('${userInstance.user.dateOfBirth ?? ''}'),
           ),
           ListTile(
             title: Text('Address'),
-            subtitle: Text('1180, Elton John'),
+            subtitle: Text('${userInstance.user.address ?? ''}'),
           ),
           ListTile(
             title: Text('Phone Number'),
-            subtitle: Text('08121002001'),
+            subtitle: Text('${userInstance.user.phoneNumber ?? ''}'),
           ),
           ListTile(
             title: Text('Next of Kin'),
-            subtitle: Text('Emilia Doe'),
+            subtitle: Text('${userInstance.user.nextOfKin ?? ''}'),
           ),
           ListTile(
-            title: Text('Next of Kin Phone Number'),
-            subtitle: Text('08121002001'),
+            title: Text("Next of Kin's Phone Number"),
+            subtitle: Text('${userInstance.user.nextOfKinPhoneNumber ?? ''}'),
           ),
         ]))
       ],

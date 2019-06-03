@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:transport_app/models/company.dart';
+import 'package:transport_app/models/company_model.dart';
 import 'package:transport_app/pages/transport.dart';
 import 'package:transport_app/utils/url_helper.dart';
 
@@ -37,7 +38,7 @@ class _TerminalPageContentState extends State<TerminalPageContent> {
 
     var response = await http.get(url, headers: {'Authorization': authToken});
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       List<Company> mapped = (jsonDecode(response.body) as List)
           .asMap()
           .map((index, company) => MapEntry(

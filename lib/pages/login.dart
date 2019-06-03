@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -180,7 +181,7 @@ class _SignInFormWidgetState extends State<_SignInFormWidget> {
     var response = await http
         .post(url, body: {'username': '$username', 'password': '$password'});
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       Scaffold.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 3),
         content: Text('Successfully Sign In'),
@@ -331,7 +332,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
       'password2': '$password'
     });
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == HttpStatus.created) {
       Scaffold.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 3),
         content: Text('Successfully Register'),
