@@ -51,7 +51,6 @@ class _ProfilePageContentState extends State<_ProfilePageContent> {
         );
       }
     } finally {
-      print(userInstance.user.username);
       client.close();
     }
   }

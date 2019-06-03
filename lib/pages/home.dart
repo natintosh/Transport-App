@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:transport_app/utils/secure_storage.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -83,9 +86,26 @@ class SearchBarWidget extends StatefulWidget {
   }
 }
 
+Key ticketInfoKey = GlobalKey();
+
 class _SearchBarWidgetState extends State<SearchBarWidget> {
+  List<TargetFocus> targets = List();
+
+  Key searchKey = GlobalKey();
+  Key profileKey = GlobalKey();
+
+  Size screenSize;
+
+  @override
+  void initState() {
+    initTargets();
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenSize = MediaQuery.of(context).size;
     return Row(
       children: <Widget>[
         Expanded(
@@ -94,6 +114,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               tag: 'searchCardHero',
               child: Material(
                 child: Card(
+                    key: searchKey,
                     shape: StadiumBorder(),
                     elevation: 4,
                     margin: EdgeInsets.all(8),
@@ -116,6 +137,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           ),
         ),
         Card(
+            key: profileKey,
             shape: StadiumBorder(),
             elevation: 4,
             margin: EdgeInsets.all(8),
@@ -151,6 +173,113 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       ],
     );
   }
+
+  void initTargets() {
+    targets
+        .add(TargetFocus(identify: 'Target 1', keyTarget: searchKey, contents: [
+      ContentTarget(
+          align: AlignContent.bottom,
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Search",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Click here to search for avaliable ticket",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ))
+    ]));
+    targets.add(
+        TargetFocus(identify: 'Target 2', keyTarget: profileKey, contents: [
+      ContentTarget(
+          align: AlignContent.bottom,
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Profile",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "You can view, edit your profile and sign out from here",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ))
+    ]));
+    targets.add(
+        TargetFocus(identify: 'Target 3', keyTarget: ticketInfoKey, contents: [
+      ContentTarget(
+          align: AlignContent.top,
+          child: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Ticket info",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(
+                    "Information about your recent purchased ticket would show here",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
+          ))
+    ]));
+  }
+
+  void showTutorial() {
+    TutorialCoachMark(context, targets: targets, colorShadow: Colors.green,
+        finish: () {
+      print("finish");
+      SecureStorage.writeValueToKey(key: 'hasShowTutorial', value: '1');
+    }, clickSkip: () {
+      print("skip");
+      SecureStorage.writeValueToKey(key: 'hasShowTutorial', value: '1');
+    })
+      ..show();
+  }
+
+  final storage = FlutterSecureStorage();
+
+  void _afterLayout(_) async {
+    String token = await storage.read(key: 'hasShowTutorial');
+    if (token != '1') {
+      Future.delayed(Duration(milliseconds: 100), () {
+        showTutorial();
+      });
+    }
+  }
 }
 
 class DetailsCardWidget extends StatefulWidget {
@@ -168,6 +297,7 @@ class _DetailsCardWidgetState extends State<DetailsCardWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      key: ticketInfoKey,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       elevation: 4,
       margin: EdgeInsets.all(8),

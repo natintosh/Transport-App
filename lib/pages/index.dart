@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:transport_app/models/search_model.dart';
 import 'package:transport_app/models/user_model.dart';
 import 'package:transport_app/pages/home.dart';
 import 'package:transport_app/pages/terminals.dart';
@@ -30,7 +31,6 @@ class _IndexContent extends StatefulWidget {
 class _IndexContentState extends State<_IndexContent> {
   var currentIndex = 0;
   final List<Widget> tabItems = [HomePage(), TerminalPage(), TicketPage()];
-  bool _inactive = true;
 
   final storage = FlutterSecureStorage();
 
@@ -41,13 +41,14 @@ class _IndexContentState extends State<_IndexContent> {
   }
 
   Future _initialSetUp() async {
-    String url = BaseURL + UserEndPoint;
+    String profileUrl = BaseURL + UserEndPoint;
+    String ticketUrl = BaseURL + TransportEndPoint + SearchTicketEndPoint;
     String authToken = 'Token ${await storage.read(key: 'token')}';
 
     var client = http.Client();
     try {
       var userResponse =
-          await client.get(url, headers: {'Authorization': authToken});
+          await client.get(profileUrl, headers: {'Authorization': authToken});
       if (userResponse.statusCode == HttpStatus.ok) {
         var userData = jsonDecode(userResponse.body);
         userInstance.user = User(
@@ -58,8 +59,24 @@ class _IndexContentState extends State<_IndexContent> {
           lastName: userData['last_name'],
         );
       }
+      var ticketResponse =
+          await client.get(ticketUrl, headers: {'Authorization': authToken});
+      if (ticketResponse.statusCode == HttpStatus.ok) {
+        List<String> destinantions = (jsonDecode(ticketResponse.body) as List)
+            .map((ticket) => '${ticket['arrival_state']}')
+            .toList()
+            .toSet()
+            .toList();
+        List<String> origins = (jsonDecode(ticketResponse.body) as List)
+            .map((ticket) => '${ticket['departure_state']}')
+            .toList()
+            .toSet()
+            .toList();
+
+        searchInstance.origins = origins;
+        searchInstance.destinations = destinantions;
+      }
     } finally {
-      print(userInstance.user.username);
       client.close();
     }
   }

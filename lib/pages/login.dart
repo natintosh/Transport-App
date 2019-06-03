@@ -16,9 +16,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final storage = FlutterSecureStorage();
-
+  static String token;
   Future _automaticSignIn() async {
-    String token = await storage.read(key: 'token');
+    token = await storage.read(key: 'token');
 
     if (token != null) {
       Navigator.of(context).pushReplacementNamed("/index");
@@ -346,7 +346,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
 
         if (jsonResponse['username'] != null && jsonResponse['email'] != null) {
           Scaffold.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 60),
+              duration: Duration(seconds: 10),
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -362,7 +362,7 @@ class _RegisterFormWidgetState extends State<_RegisterFormWidget> {
         }
       } catch (exception) {
         Scaffold.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 60),
+            duration: Duration(seconds: 10),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

@@ -3,9 +3,16 @@ import 'package:meta/meta.dart';
 
 class SecureStorage {
   static final storage = new FlutterSecureStorage();
+  static String value;
 
-  static Future<dynamic> getValueFromKey(String key) async {
-    return await storage.read(key: key);
+  static Future<String> getValueFromKey(String key) async {
+    String value = await storage.read(key: key);
+    return value;
+  }
+
+  static getValue(String key) {
+    getValueFromKey(key);
+    return value;
   }
 
   static void deleteValueFromKey(String key) async {
@@ -13,7 +20,7 @@ class SecureStorage {
   }
 
   static void writeValueToKey(
-      {@required String key, @required dynamic value}) async {
+      {@required String key, @required String value}) async {
     storage.write(key: key, value: value);
   }
 }
